@@ -523,19 +523,8 @@
     </div>
     <select id="grade-filter">
       <option value="all">All grades</option>
-      <option value="K">Kindergarten</option>
-      <option value="1">1st grade</option>
-      <option value="2">2nd grade</option>
-      <option value="3">3rd grade</option>
-      <option value="4">4th grade</option>
-      <option value="5">5th grade</option>
       <option value="6">6th grade</option>
       <option value="7">7th grade</option>
-      <option value="8">8th grade</option>
-      <option value="9">9th grade</option>
-      <option value="10">10th grade</option>
-      <option value="11">11th grade</option>
-      <option value="12">12th grade</option>
     </select>
   </div>
 </div>
@@ -563,7 +552,7 @@
   </div>
 </main>
 
-<footer>LockedIn &mdash; educational use only.</footer>
+<footer>A <a href="https://powerhouse.c823.workers.dev" target="_blank" rel="noopener" style="color:var(--text);font-weight:500;text-underline-offset:3px;">Powerhouse</a> project &mdash; for educational use only.</footer>
 
 <!-- Settings Modal -->
 <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-label="Settings">
@@ -610,19 +599,8 @@
         </div>
         <select class="setting-select" id="default-grade">
           <option value="all">All grades</option>
-          <option value="K">Kindergarten</option>
-          <option value="1">1st grade</option>
-          <option value="2">2nd grade</option>
-          <option value="3">3rd grade</option>
-          <option value="4">4th grade</option>
-          <option value="5">5th grade</option>
           <option value="6">6th grade</option>
           <option value="7">7th grade</option>
-          <option value="8">8th grade</option>
-          <option value="9">9th grade</option>
-          <option value="10">10th grade</option>
-          <option value="11">11th grade</option>
-          <option value="12">12th grade</option>
         </select>
       </div>
     </div>
@@ -630,10 +608,7 @@
 </div>
 
 <script>
-  const GRADE_LABELS = {
-    K:'K','1':'1st','2':'2nd','3':'3rd','4':'4th','5':'5th',
-    '6':'6th','7':'7th','8':'8th','9':'9th','10':'10th','11':'11th','12':'12th'
-  };
+  const GRADE_LABELS = { '6':'6th', '7':'7th' };
 
   const DEFAULTS = { dark: false, defaultCat: 'all', defaultGrade: 'all' };
   function loadSettings() {
