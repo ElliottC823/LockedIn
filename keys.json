@@ -1,0 +1,26 @@
+[
+  {
+    "id": "example-math-001",
+    "name": "Chapter 1 – Number Sense Review",
+    "category": "math",
+    "grade": "6",
+    "file": "keys/math/ch1-number-sense-review.pdf",
+    "added": "2026-06-10"
+  },
+  {
+    "id": "example-ela-001",
+    "name": "Unit 2 Vocabulary Quiz",
+    "category": "ela",
+    "grade": "7",
+    "file": "keys/ela/unit2-vocab-quiz.pdf",
+    "added": "2026-06-10"
+  },
+  {
+    "id": "example-science-001",
+    "name": "Lab Safety Assessment",
+    "category": "science",
+    "grade": "8",
+    "file": "keys/science/lab-safety-assessment.pdf",
+    "added": "2026-06-10"
+  }
+]
