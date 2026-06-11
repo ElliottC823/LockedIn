@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LockedIn — Answer Keys</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/ElliottC823/LockedIn/main/icon.png" />
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ElliottC823/LockedIn/main/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #F8F9FC;
+      --surface:   #FFFFFF;
+      --border:    #E4E7EF;
+      --text:      #111827;
+      --muted:     #6B7280;
+      --accent:    #4F46E5;
+      --accent-lt: #EEF2FF;
+      --shadow:    rgba(0,0,0,0.07);
+
+      --math-bg:   #EEF2FF; --math-fg: #4338CA;
+      --ela-bg:    #F5F3FF; --ela-fg:  #7C3AED;
+      --science-bg:#ECFDF5; --science-fg:#059669;
+      --ss-bg:     #FFF7ED; --ss-fg:   #C2410C;
+      --history-bg:#FFFBEB; --history-fg:#B45309;
+      --other-bg:  #F3F4F6; --other-fg: #374151;
+    }
+
+    [data-theme="dark"] {
+      --bg:        #0F1117;
+      --surface:   #1A1D27;
+      --border:    #2A2D3A;
+      --text:      #F1F3F9;
+      --muted:     #8B92A5;
+      --accent:    #6366F1;
+      --accent-lt: #1E1F3B;
+      --shadow:    rgba(0,0,0,0.3);
+
+      --math-bg:   #1E203B; --math-fg: #818CF8;
+      --ela-bg:    #1F1A35; --ela-fg:  #A78BFA;
+      --science-bg:#0F231E; --science-fg:#34D399;
+      --ss-bg:     #251A0F; --ss-fg:   #FB923C;
+      --history-bg:#231D0A; --history-fg:#FCD34D;
+      --other-bg:  #1C1F26; --other-fg: #9CA3AF;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background .2s, color .2s;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      transition: background .2s, border-color .2s;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .logo-icon img { width: 34px; height: 34px; object-fit: cover; border-radius: 8px; }
+    .logo-icon svg { width: 18px; height: 18px; color: #fff; }
+    .logo-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+    .logo-name span { color: var(--accent); }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .header-tag {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .btn-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .btn-icon:hover { background: var(--bg); color: var(--text); border-color: var(--accent); }
+    .btn-icon svg { width: 17px; height: 17px; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      color: #fff;
+      padding: 52px 24px 48px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: 15px;
+      opacity: 0.85;
+      max-width: 480px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+    .search-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      width: 18px; height: 18px;
+      color: #9CA3AF;
+      pointer-events: none;
+    }
+    #search {
+      width: 100%;
+      padding: 13px 16px 13px 44px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      color: var(--text);
+      background: var(--surface);
+    }
+    #search::placeholder { color: #9CA3AF; }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+
+    /* ── Filters ── */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+    }
+    .pill-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+      user-select: none;
+    }
+    .pill:hover { border-color: var(--accent); color: var(--accent); }
+    .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .divider { width: 1px; height: 24px; background: var(--border); }
+    select#grade-filter {
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface);
+      cursor: pointer;
+      outline: none;
+    }
+    select#grade-filter:focus { border-color: var(--accent); }
+
+    /* ── Stats ── */
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .results-count { font-size: 13px; color: var(--muted); }
+    .results-count strong { color: var(--text); }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: box-shadow .15s, transform .15s, background .2s, border-color .2s;
+    }
+    .card:hover { box-shadow: 0 4px 20px var(--shadow); transform: translateY(-2px); }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .card-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      text-transform: capitalize;
+    }
+    .badge-math     { background: var(--math-bg);    color: var(--math-fg); }
+    .badge-ela      { background: var(--ela-bg);     color: var(--ela-fg); }
+    .badge-science  { background: var(--science-bg); color: var(--science-fg); }
+    .badge-ss       { background: var(--ss-bg);      color: var(--ss-fg); }
+    .badge-history  { background: var(--history-bg); color: var(--history-fg); }
+    .badge-other    { background: var(--other-bg);   color: var(--other-fg); }
+    .badge-grade { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+    .card-name { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .card-actions { margin-top: auto; }
+    .btn-view {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background .15s;
+      width: 100%;
+      justify-content: center;
+    }
+    .btn-view:hover { background: #4338CA; }
+    .btn-view svg { width: 15px; height: 15px; }
+
+    /* ── Empty / Loading ── */
+    .state-box {
+      grid-column: 1/-1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 64px 24px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .state-box svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: .35; }
+    .state-box p { font-size: 15px; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Settings Modal ── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      transform: translateY(12px);
+      transition: transform .2s, background .2s;
+    }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header h2 { font-size: 16px; font-weight: 700; color: var(--text); }
+    .modal-close {
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .modal-close:hover { background: var(--bg); color: var(--text); }
+    .modal-close svg { width: 16px; height: 16px; }
+    .modal-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 20px; }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .setting-info { flex: 1; }
+    .setting-label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .setting-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+    /* Toggle switch */
+    .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      position: absolute; inset: 0;
+      background: var(--border);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .toggle input:checked + .toggle-track { background: var(--accent); }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      left: 3px; top: 3px;
+      width: 18px; height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform .2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .toggle input:checked + .toggle-track::after { transform: translateX(20px); }
+
+    .setting-select {
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg);
+      cursor: pointer;
+      outline: none;
+      min-width: 130px;
+    }
+    .setting-select:focus { border-color: var(--accent); }
+
+    .modal-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--muted);
+      margin-bottom: -8px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface);
+      transition: background .2s, border-color .2s;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 36px 16px 32px; }
+      main { padding: 20px 16px 40px; }
+      .filters { gap: 8px; }
+      .header-tag { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">
+    <div class="logo-icon">
+      <img src="https://raw.githubusercontent.com/ElliottC823/LockedIn/main/icon.png"
+           alt="LockedIn"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+      <svg style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+    <span class="logo-name">Locked<span>In</span></span>
+  </a>
+  <div class="header-right">
+    <span class="header-tag">Answer Keys</span>
+    <button class="btn-icon" id="settings-btn" title="Settings" aria-label="Open settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Find the Key You Need</h1>
+  <p>Browse answer keys by subject and grade. Every key is verified and ready to download as a PDF.</p>
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input id="search" type="text" placeholder="Search by name…" autocomplete="off" />
+  </div>
+</section>
+
+<main>
+  <div class="filters">
+    <span class="filter-label">Subject</span>
+    <div class="pill-group" id="cat-pills">
+      <button class="pill active" data-cat="all">All</button>
+      <button class="pill" data-cat="math">Math</button>
+      <button class="pill" data-cat="ela">ELA</button>
+      <button class="pill" data-cat="science">Science</button>
+      <button class="pill" data-cat="social studies">Social Studies</button>
+      <button class="pill" data-cat="history">History</button>
+      <button class="pill" data-cat="other">Other</button>
+    </div>
+    <div class="divider"></div>
+    <span class="filter-label">Grade</span>
+    <select id="grade-filter">
+      <option value="all">All Grades</option>
+      <option value="K">Kindergarten</option>
+      <option value="1">1st Grade</option>
+      <option value="2">2nd Grade</option>
+      <option value="3">3rd Grade</option>
+      <option value="4">4th Grade</option>
+      <option value="5">5th Grade</option>
+      <option value="6">6th Grade</option>
+      <option value="7">7th Grade</option>
+      <option value="8">8th Grade</option>
+      <option value="9">9th Grade</option>
+      <option value="10">10th Grade</option>
+      <option value="11">11th Grade</option>
+      <option value="12">12th Grade</option>
+    </select>
+  </div>
+
+  <div class="stats-bar">
+    <span class="results-count" id="results-count"></span>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="state-box">
+      <div class="spinner"></div>
+      <p>Loading keys…</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 LockedIn &mdash; All keys for educational use only.
+</footer>
+
+<!-- Settings Modal -->
+<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-label="Settings">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Settings</h2>
+      <button class="modal-close" id="modal-close" aria-label="Close settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <span class="modal-section-title">Appearance</span>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Dark Mode</div>
+          <div class="setting-desc">Switch to a darker color scheme</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggle-dark" />
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+
+      <span class="modal-section-title">Defaults</span>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Default Subject</div>
+          <div class="setting-desc">Pre-select a subject filter on load</div>
+        </div>
+        <select class="setting-select" id="default-cat">
+          <option value="all">All</option>
+          <option value="math">Math</option>
+          <option value="ela">ELA</option>
+          <option value="science">Science</option>
+          <option value="social studies">Social Studies</option>
+          <option value="history">History</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Default Grade</div>
+          <div class="setting-desc">Pre-select a grade filter on load</div>
+        </div>
+        <select class="setting-select" id="default-grade">
+          <option value="all">All Grades</option>
+          <option value="K">Kindergarten</option>
+          <option value="1">1st Grade</option>
+          <option value="2">2nd Grade</option>
+          <option value="3">3rd Grade</option>
+          <option value="4">4th Grade</option>
+          <option value="5">5th Grade</option>
+          <option value="6">6th Grade</option>
+          <option value="7">7th Grade</option>
+          <option value="8">8th Grade</option>
+          <option value="9">9th Grade</option>
+          <option value="10">10th Grade</option>
+          <option value="11">11th Grade</option>
+          <option value="12">12th Grade</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Settings (localStorage) ───────────────────────────────────────────────
+  const DEFAULTS = { dark: false, defaultCat: 'all', defaultGrade: 'all' };
+
+  function loadSettings() {
+    try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem('li_settings') || '{}') }; }
+    catch { return { ...DEFAULTS }; }
+  }
+  function saveSettings(s) {
+    localStorage.setItem('li_settings', JSON.stringify(s));
+  }
+
+  let settings = loadSettings();
+
+  function applyTheme() {
+    document.documentElement.setAttribute('data-theme', settings.dark ? 'dark' : 'light');
+  }
+  applyTheme();
+
+  // ── Filter state ──────────────────────────────────────────────────────────
+  const GRADE_LABELS = {
+    K:'K','1':'1st','2':'2nd','3':'3rd','4':'4th','5':'5th',
+    '6':'6th','7':'7th','8':'8th','9':'9th','10':'10th','11':'11th','12':'12th'
+  };
+  const BADGE_CLASS = {
+    math:'badge-math', ela:'badge-ela', science:'badge-science',
+    'social studies':'badge-ss', history:'badge-history',
+  };
+
+  let allKeys = [];
+  let activeCat   = settings.defaultCat;
+  let activeGrade = settings.defaultGrade;
+  let query = '';
+
+  // Apply saved defaults to UI
+  function applyDefaults() {
+    document.querySelectorAll('.pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.cat === activeCat);
+    });
+    document.getElementById('grade-filter').value = activeGrade;
+  }
+  applyDefaults();
+
+  // ── Keys ──────────────────────────────────────────────────────────────────
+  async function loadKeys() {
+    try {
+      const res = await fetch('/api/keys');
+      allKeys = await res.json();
+      render();
+    } catch {
+      document.getElementById('grid').innerHTML =
+        '<div class="state-box"><p>Could not load keys. Please try again later.</p></div>';
+    }
+  }
+
+  function filtered() {
+    return allKeys.filter(k => {
+      if (activeCat !== 'all' && k.category.toLowerCase() !== activeCat) return false;
+      if (activeGrade !== 'all' && String(k.grade) !== activeGrade) return false;
+      if (query && !k.name.toLowerCase().includes(query)) return false;
+      return true;
+    });
+  }
+
+  function gradeLabel(g) {
+    return GRADE_LABELS[String(g)]
+      ? GRADE_LABELS[String(g)] + (g === 'K' ? '' : ' Grade')
+      : 'Grade ' + g;
+  }
+
+  function render() {
+    const keys = filtered();
+    const grid  = document.getElementById('grid');
+    const count = document.getElementById('results-count');
+
+    count.innerHTML = keys.length === 0
+      ? ''
+      : '<strong>' + keys.length + '</strong> key' + (keys.length === 1 ? '' : 's') + ' found';
+
+    if (keys.length === 0) {
+      grid.innerHTML = `<div class="state-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <p>No keys match your filters.</p>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = keys.map(k => {
+      const cat = k.category.toLowerCase();
+      const badgeClass = BADGE_CLASS[cat] || 'badge-other';
+      const catLabel = k.category.charAt(0).toUpperCase() + k.category.slice(1);
+      return `<div class="card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge ${badgeClass}">${catLabel}</span>
+            <span class="badge badge-grade">${gradeLabel(k.grade)}</span>
+          </div>
+        </div>
+        <div class="card-name">${k.name}</div>
+        <div class="card-actions">
+          <a class="btn-view" href="/pdf/${k.file}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            View PDF
+          </a>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Filter events ─────────────────────────────────────────────────────────
+  document.getElementById('cat-pills').addEventListener('click', e => {
+    const pill = e.target.closest('.pill');
+    if (!pill) return;
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activeCat = pill.dataset.cat;
+    render();
+  });
+
+  document.getElementById('grade-filter').addEventListener('change', e => {
+    activeGrade = e.target.value;
+    render();
+  });
+
+  document.getElementById('search').addEventListener('input', e => {
+    query = e.target.value.toLowerCase().trim();
+    render();
+  });
+
+  // ── Settings modal ────────────────────────────────────────────────────────
+  const backdrop    = document.getElementById('modal-backdrop');
+  const toggleDark  = document.getElementById('toggle-dark');
+  const defaultCat  = document.getElementById('default-cat');
+  const defaultGrade = document.getElementById('default-grade');
+
+  function openSettings() {
+    toggleDark.checked   = settings.dark;
+    defaultCat.value     = settings.defaultCat;
+    defaultGrade.value   = settings.defaultGrade;
+    backdrop.classList.add('open');
+  }
+  function closeSettings() { backdrop.classList.remove('open'); }
+
+  document.getElementById('settings-btn').addEventListener('click', openSettings);
+  document.getElementById('modal-close').addEventListener('click', closeSettings);
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) closeSettings(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSettings(); });
+
+  toggleDark.addEventListener('change', () => {
+    settings.dark = toggleDark.checked;
+    applyTheme();
+    saveSettings(settings);
+  });
+
+  defaultCat.addEventListener('change', () => {
+    settings.defaultCat = defaultCat.value;
+    saveSettings(settings);
+  });
+
+  defaultGrade.addEventListener('change', () => {
+    settings.defaultGrade = defaultGrade.value;
+    saveSettings(settings);
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  loadKeys();
+</script>
+
+</body>
+</html>
